@@ -18,6 +18,9 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import './DisplayBooksForm.css';
+import { Formik } from 'formik';
+import MenuAppBar from '../main-bar/AppBar';
 
 interface Data {
   id: number;
@@ -384,8 +387,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
+          sx={{ flex: '1 1 100%', fontFamily: 'Palatino Linotype' }}
+          variant="h5"
           id="tableTitle"
           component="div"
         >
@@ -483,89 +486,112 @@ export default function EnhancedTable() {
   );
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
+        backgroundColor: 'darkgray',
+        flexDirection: 'column',
       }}
     >
-      <Paper sx={{ width: '80%', mb: 1 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+      <MenuAppBar />
+      <h1
+        style={{
+          color: 'black',
+          textAlign: 'center',
+          fontFamily: 'Palatino Linotype',
+          fontSize: 40,
+        }}
+      >
+        Search for your book
+      </h1>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          backgroundColor: 'darkgray',
+        }}
+      >
+        <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell component="th" id={labelId} scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="left">{row.isbn}</TableCell>
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.author}</TableCell>
+                      <TableCell align="left">{row.avaliable_copies}</TableCell>
+                      <TableCell align="left">{row.publisher}</TableCell>
+                      <TableCell align="left">{row.publication_year}</TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
                   <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {row.id}
-                    </TableCell>
-                    <TableCell align="left">{row.isbn}</TableCell>
-                    <TableCell align="left">{row.title}</TableCell>
-                    <TableCell align="left">{row.author}</TableCell>
-                    <TableCell align="left">{row.avaliable_copies}</TableCell>
-                    <TableCell align="left">{row.publisher}</TableCell>
-                    <TableCell align="left">{row.publication_year}</TableCell>
+                    <TableCell colSpan={6} />
                   </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Box>
+    </div>
   );
 }
