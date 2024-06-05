@@ -18,39 +18,35 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import './Users.css';
+import { Formik } from 'formik';
 import MenuAppBar from '../main-bar/AppBar';
-import './LoansForm.css';
 
 interface Data {
   id: number;
-  end_date: string;
-  loan_date: string;
-  return_date: string;
-  user_id: number;
-  book_id: number;
+  email: string;
+  name: string;
+  username: string;
 }
 
-function createLoanData(
+function createUserData(
   id: number,
-  end_date: string,
-  loan_date: string,
-  return_date: string,
-  user_id: number,
-  book_id: number,
+  email: string,
+  name: string,
+  username: string,
 ): Data {
   return {
     id,
-    end_date,
-    loan_date,
-    return_date,
-    user_id,
-    book_id,
+    email,
+    name,
+    username,
   };
 }
 
 const rows = [
-  createLoanData(1, '2024-05-22', '2024-05-21', '2024-06-21', 1, 1),
-  createLoanData(2, '2024-05-20', '2024-05-18', '2024-06-18', 2, 2),
+  createUserData(1, 'a@mail.com', 'Jon', 'Jon123'),
+  createUserData(2, 'b@mail.com', 'Jane', 'Jane123'),
+  createUserData(3, 'c@mail.com', 'Ben', 'Ben123'),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -107,34 +103,22 @@ const headCells: readonly HeadCell[] = [
     label: 'ID',
   },
   {
-    id: 'end_date',
+    id: 'email',
     numeric: false,
     disablePadding: false,
-    label: 'End Date',
+    label: 'Email',
   },
   {
-    id: 'loan_date',
+    id: 'name',
     numeric: false,
     disablePadding: false,
-    label: 'Loan Date',
+    label: 'Name',
   },
   {
-    id: 'return_date',
+    id: 'username',
     numeric: false,
     disablePadding: false,
-    label: 'Return Date',
-  },
-  {
-    id: 'user_id',
-    numeric: true,
-    disablePadding: false,
-    label: 'User ID',
-  },
-  {
-    id: 'book_id',
-    numeric: true,
-    disablePadding: false,
-    label: 'Book ID',
+    label: 'Username',
   },
 ];
 
@@ -236,7 +220,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Loans
+          Readers
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -349,7 +333,7 @@ export default function EnhancedTable() {
           fontSize: 40,
         }}
       >
-        All loans
+        All readers
       </h1>
       <Box
         sx={{
@@ -360,7 +344,7 @@ export default function EnhancedTable() {
           backgroundColor: 'darkgray',
         }}
       >
-        <Paper sx={{ width: '100%', mb: 40, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '95%', mb: 30, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
@@ -404,11 +388,9 @@ export default function EnhancedTable() {
                       <TableCell component="th" id={labelId} scope="row">
                         {row.id}
                       </TableCell>
-                      <TableCell align="left">{row.end_date}</TableCell>
-                      <TableCell align="left">{row.loan_date}</TableCell>
-                      <TableCell align="left">{row.return_date}</TableCell>
-                      <TableCell align="left">{row.user_id}</TableCell>
-                      <TableCell align="left">{row.book_id}</TableCell>
+                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.username}</TableCell>
                     </TableRow>
                   );
                 })}

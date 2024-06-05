@@ -37,6 +37,34 @@ function HomePage() {
             View loans
           </Typography>
         </Paper>
+        <Paper
+          variant="outlined"
+          className="homepage-paper"
+          component={Link}
+          to="/userList"
+        >
+          <Typography
+            variant="h6"
+            component="div"
+            className="homepage-typography"
+          >
+            View readers
+          </Typography>
+        </Paper>
+        <Paper
+          variant="outlined"
+          className="homepage-paper"
+          component={Link}
+          to="/loanList"
+        >
+          <Typography
+            variant="h6"
+            component="div"
+            className="homepage-typography"
+          >
+            Edit books
+          </Typography>
+        </Paper>
       </Box>
       <Outlet />
     </Box>
