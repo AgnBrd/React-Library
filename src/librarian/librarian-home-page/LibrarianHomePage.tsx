@@ -1,5 +1,5 @@
 import { Box, Paper, Typography } from '@mui/material';
-import MenuAppBar from '../main-bar/AppBar';
+import MenuAppBar from '../../main-bar/AppBar';
 import { Link, Outlet } from 'react-router-dom';
 import './LibrarianHomePage.css'; // Import the CSS file
 

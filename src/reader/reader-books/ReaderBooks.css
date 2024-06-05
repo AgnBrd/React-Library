@@ -1,0 +1,28 @@
+.reader_books {
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+    background-color: gainsboro;
+    /*color: white;*/
+}
+
+.reader_button {
+    background-color: darkgrey; /* kolor tła */
+    border: none; /* usuwamy obramowanie */
+    color: white; /* kolor tekstu */
+    padding: 10px 20px; /* margines wewnętrzny */
+    text-align: center; /* wyśrodkowanie tekstu */
+    text-decoration: none; /* usuwamy podkreślenie */
+    display: inline-block;
+    font-size: 49px; /* rozmiar czcionki */
+    cursor: pointer; /* zmiana kursora na wskaźnik */
+    border-radius: 4px; /* zaokrąglenie rogów */
+    transition: background-color 0.3s; /* płynne przejście koloru tła */
+}
+
+.button:hover {
+    background-color: #0b7dda; /* zmiana koloru tła po najechaniu myszką */
+}

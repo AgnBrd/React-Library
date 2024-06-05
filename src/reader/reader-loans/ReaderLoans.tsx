@@ -15,192 +15,39 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import './ReaderBooks.css';
-import { Button } from '@mui/material';
-import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
+import './ReaderLoans.css';
 
 interface Data {
   id: number;
-  isbn: string;
-  title: string;
-  author: string;
-  avaliable_copies: number;
-  publisher: string;
-  publication_year: number;
+  end_date: string;
+  loan_date: string;
+  return_date: string;
+  book_title: string;
 }
 
-function createBookData(
+function createLoanData(
   id: number,
-  isbn: string,
-  title: string,
-  author: string,
-  avaliable_copies: number,
-  publisher: string,
-  publication_year: number,
+  end_date: string,
+  loan_date: string,
+  return_date: string,
+  book_title: string,
 ): Data {
   return {
     id,
-    isbn,
-    title,
-    author,
-    avaliable_copies,
-    publisher,
-    publication_year,
+    end_date,
+    loan_date,
+    return_date,
+    book_title,
   };
 }
 
 const rows = [
-  createBookData(
-    1,
-    '842468170-3',
-    'Chinese Zodiac (Armour of God III) (CZ12)',
-    'Starsmeare',
-    1,
-    'Corse',
-    2007,
-  ),
-  createBookData(
-    2,
-    '376287635-5',
-    'Diminished Capacity',
-    'Dellenbroker',
-    2,
-    'Guislin',
-    2017,
-  ),
-  createBookData(
-    3,
-    '787190103-6',
-    'All That... for This?!',
-    'Keri',
-    3,
-    'Dymidowski',
-    2011,
-  ),
-  createBookData(
-    4,
-    '037958332-1',
-    'Angel in Cracow (Aniol w Krakowie)',
-    'Flieg',
-    4,
-    'Raspison',
-    2007,
-  ),
-  createBookData(5, '260233828-1', 'Lawless', 'Danilin', 5, 'Pharro', 2012),
-  createBookData(6, '806472578-X', 'Starsky & Hutch', 'Bartos', 6, 'Odd', 2013),
-  createBookData(
-    7,
-    '087956961-1',
-    'NeverEnding Story II: The Next Chapter, The',
-    'Dowd',
-    7,
-    'Haynesford',
-    2020,
-  ),
-  createBookData(
-    8,
-    '857916622-5',
-    'California Solo',
-    'Matlock',
-    8,
-    'Tomalin',
-    2010,
-  ),
-  createBookData(
-    9,
-    '717089759-8',
-    'Man There Was, A (Terje Vigen)',
-    'Poker',
-    9,
-    'Osant',
-    2020,
-  ),
-  createBookData(
-    10,
-    '573194175-0',
-    'Box, The',
-    'Etchells',
-    10,
-    'Sebrens',
-    2017,
-  ),
-  createBookData(
-    11,
-    '133468410-3',
-    'Indian Runner, The',
-    'Sangar',
-    11,
-    'Klulik',
-    2015,
-  ),
-  createBookData(
-    12,
-    '326589607-2',
-    'Run of the Country, The',
-    'Standen',
-    12,
-    'Works',
-    2004,
-  ),
-  createBookData(
-    13,
-    '424414552-4',
-    'Arch of Triumph',
-    'Fozard',
-    13,
-    'Emsden',
-    2018,
-  ),
-  createBookData(
-    14,
-    '767953407-1',
-    'Bells Are Ringing',
-    'Aust',
-    14,
-    'Madden',
-    2007,
-  ),
-  createBookData(
-    15,
-    '120089222-4',
-    'City Zero',
-    'Reisenstein',
-    15,
-    'Stamps',
-    2012,
-  ),
-  createBookData(
-    16,
-    '885090638-2',
-    'Hue and Cry',
-    'Jewett',
-    16,
-    'Fortman',
-    2013,
-  ),
-  createBookData(17, '266235024-5', 'Grouse', 'Leat', 17, 'Wingeatt', 1997),
-  createBookData(
-    18,
-    '260046321-6',
-    'Velvet Goldmine',
-    'Ogborne',
-    18,
-    'Skitteral',
-    2005,
-  ),
-  createBookData(19, '053342039-3', 'Almost 18', 'Relfe', 19, 'Downing', 2013),
-  createBookData(
-    20,
-    '586818243-X',
-    'Chandni Chowk to China',
-    'Tomczak',
-    20,
-    'Azam',
-    2019,
-  ),
+  createLoanData(1, '2024-05-22', '2024-05-21', '2024-06-21', 'pierwsza'),
+  createLoanData(2, '2024-05-20', '2024-05-18', '2024-06-18', 'druga'),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -257,40 +104,28 @@ const headCells: readonly HeadCell[] = [
     label: 'ID',
   },
   {
-    id: 'isbn',
+    id: 'end_date',
     numeric: false,
     disablePadding: false,
-    label: 'ISBN',
+    label: 'End Date',
   },
   {
-    id: 'title',
+    id: 'loan_date',
     numeric: false,
     disablePadding: false,
-    label: 'Title',
+    label: 'Loan Date',
   },
   {
-    id: 'author',
+    id: 'return_date',
     numeric: false,
     disablePadding: false,
-    label: 'Author',
+    label: 'Return Date',
   },
   {
-    id: 'avaliable_copies',
-    numeric: true,
-    disablePadding: false,
-    label: 'Available copies',
-  },
-  {
-    id: 'publisher',
+    id: 'book_title',
     numeric: false,
     disablePadding: false,
-    label: 'Publisher',
-  },
-  {
-    id: 'publication_year',
-    numeric: true,
-    disablePadding: false,
-    label: 'Year of publication',
+    label: 'Book Title',
   },
 ];
 
@@ -392,28 +227,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Books
+          Loans
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Button
-          style={{
-            backgroundColor: 'black',
-            border: 'none',
-            color: 'darkgray',
-            padding: '10px 30px',
-            textAlign: 'center',
-            textDecoration: 'none',
-            display: 'inline-block',
-            fontSize: '16px',
-            cursor: 'pointer',
-            borderRadius: '4px',
-            transition: 'background-color 0.3s',
-            fontFamily: 'Palatino Linotype', // zmiana czcionki
-          }}
-        >
-          Loan
-        </Button>
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
@@ -424,7 +246,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
-
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
@@ -519,7 +340,7 @@ export default function EnhancedTable() {
           fontSize: 40,
         }}
       >
-        Search for your book
+        Your loans
       </h1>
       <Box
         sx={{
@@ -530,7 +351,7 @@ export default function EnhancedTable() {
           backgroundColor: 'darkgray',
         }}
       >
-        <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '100%', mb: 40, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
@@ -574,12 +395,10 @@ export default function EnhancedTable() {
                       <TableCell component="th" id={labelId} scope="row">
                         {row.id}
                       </TableCell>
-                      <TableCell align="left">{row.isbn}</TableCell>
-                      <TableCell align="left">{row.title}</TableCell>
-                      <TableCell align="left">{row.author}</TableCell>
-                      <TableCell align="left">{row.avaliable_copies}</TableCell>
-                      <TableCell align="left">{row.publisher}</TableCell>
-                      <TableCell align="left">{row.publication_year}</TableCell>
+                      <TableCell align="left">{row.end_date}</TableCell>
+                      <TableCell align="left">{row.loan_date}</TableCell>
+                      <TableCell align="left">{row.return_date}</TableCell>
+                      <TableCell align="left">{row.book_title}</TableCell>
                     </TableRow>
                   );
                 })}
