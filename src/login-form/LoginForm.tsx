@@ -15,7 +15,7 @@ function LoginForm() {
       // apiClient.login(values).then((response) => {
       //   console.log(response);
       //   if (response.success) {
-      navigate('/home');
+      navigate('/librarianHome');
       //   } else {
       //     formik.setFieldError('username', 'Invalid username or password');
       //   }

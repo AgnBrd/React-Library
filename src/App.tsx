@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import LoginForm from './login-form/LoginForm';
 import LibrarianHomePage from './librarian/librarian-home-page/LibrarianHomePage';
 import LibrarianBooks from './librarian/librarian-books/LibrarianBooks';
@@ -8,8 +7,12 @@ import LibrarianLoans from './librarian/librarian-loans/LibrarianLoans';
 import ReaderLoans from './reader/reader-loans/ReaderLoans';
 import ReaderBooks from './reader/reader-books/ReaderBooks';
 import ReaderHomePage from './reader/reader-home-page/ReaderHomePage';
+import LibrarianEditBooks from './librarian/librarian-edit-books/LibrarianEditBooks';
 import { Route, Navigate, BrowserRouter } from 'react-router-dom';
 import { Routes } from 'react-router-dom';
+import AddBook from './librarian/librarian-edit-books/AddBook';
+import DeleteBook from './librarian/librarian-edit-books/DeleteBook';
+import UpdateBook from './librarian/librarian-edit-books/UpdateBook';
 // import ApiProvider from './api/ApiProvider';
 
 function App() {
@@ -17,6 +20,7 @@ function App() {
     <BrowserRouter>
       {/*<ApiProvider>*/}
       <Routes>
+        <Route path="*" element={<h1>404 page don't exists</h1>} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/librarianHome" element={<LibrarianHomePage />} />
@@ -26,6 +30,11 @@ function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/readerLoan" element={<ReaderLoans />} />
         <Route path="/readerBook" element={<ReaderBooks />} />
+        <Route path="/librarianEditBooks" element={<LibrarianEditBooks />}>
+          <Route path="add" element={<AddBook />} />
+          <Route path="update" element={<UpdateBook />} />
+          <Route path="delete" element={<DeleteBook />} />
+        </Route>
       </Routes>
       {/*</ApiProvider>*/}
     </BrowserRouter>

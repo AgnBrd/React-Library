@@ -13,7 +13,7 @@ function LibrarianHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/bookList"
+          to="/librarianBook"
         >
           <Typography
             variant="h6"
@@ -27,7 +27,7 @@ function LibrarianHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/loanList"
+          to="/librarianLoan"
         >
           <Typography
             variant="h6"
@@ -41,7 +41,7 @@ function LibrarianHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/userList"
+          to="/users"
         >
           <Typography
             variant="h6"
@@ -55,7 +55,7 @@ function LibrarianHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/loanList"
+          to="/librarianLoans"
         >
           <Typography
             variant="h6"
