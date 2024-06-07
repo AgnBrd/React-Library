@@ -8,7 +8,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import './AppBar.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { LogoutRounded } from '@mui/icons-material';
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -20,6 +21,7 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const navigate = useNavigate();
 
   return (
@@ -30,7 +32,12 @@ export default function MenuAppBar() {
           component="div"
           sx={{ flexGrow: 1, fontFamily: 'Palatino Linotype' }}
         >
-          Library
+          <Link
+            to="/librarianHome"
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            Library
+          </Link>
         </Typography>
         <div>
           <IconButton
@@ -41,7 +48,7 @@ export default function MenuAppBar() {
             onClick={() => navigate('/login')}
             color="inherit"
           >
-            <AccountCircle />
+            <LogoutRounded />
           </IconButton>
           <Menu
             id="menu-appbar"

@@ -55,7 +55,7 @@ function LibrarianHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/librarianLoans"
+          to="/librarianEditBooks/add"
         >
           <Typography
             variant="h6"
