@@ -1,9 +1,15 @@
 import { Box, Paper, Typography } from '@mui/material';
 import MenuAppBar from '../../main-bar/AppBar';
 import { Link, Outlet } from 'react-router-dom';
-import './LibrarianHomePage.css'; // Import the CSS file
+import './LibrarianHomePage.css';
+import { useApi } from '../../api/ApiProvider'; // Import the CSS file
 
 function LibrarianHomePage() {
+  const apiClient = useApi();
+
+  apiClient.getBooks().then((response) => {
+    console.log(response);
+  });
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MenuAppBar />

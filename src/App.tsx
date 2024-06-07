@@ -13,30 +13,30 @@ import { Routes } from 'react-router-dom';
 import AddBook from './librarian/librarian-edit-books/AddBook';
 import DeleteBook from './librarian/librarian-edit-books/DeleteBook';
 import UpdateBook from './librarian/librarian-edit-books/UpdateBook';
-// import ApiProvider from './api/ApiProvider';
+import ApiProvider from './api/ApiProvider';
 
 function App() {
   return (
     <BrowserRouter>
-      {/*<ApiProvider>*/}
-      <Routes>
-        <Route path="*" element={<h1>404 page don't exists</h1>} />
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/librarianHome" element={<LibrarianHomePage />} />
-        <Route path="/readerHome" element={<ReaderHomePage />} />
-        <Route path="/librarianBook" element={<LibrarianBooks />} />
-        <Route path="/librarianLoan" element={<LibrarianLoans />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/readerLoan" element={<ReaderLoans />} />
-        <Route path="/readerBook" element={<ReaderBooks />} />
-        <Route path="/librarianEditBooks" element={<LibrarianEditBooks />}>
-          <Route path="add" element={<AddBook />} />
-          <Route path="update" element={<UpdateBook />} />
-          <Route path="delete" element={<DeleteBook />} />
-        </Route>
-      </Routes>
-      {/*</ApiProvider>*/}
+      <ApiProvider>
+        <Routes>
+          <Route path="*" element={<h1>404 page don't exists</h1>} />
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/librarianHome" element={<LibrarianHomePage />} />
+          <Route path="/readerHome" element={<ReaderHomePage />} />
+          <Route path="/librarianBook" element={<LibrarianBooks />} />
+          <Route path="/librarianLoan" element={<LibrarianLoans />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/readerLoan" element={<ReaderLoans />} />
+          <Route path="/readerBook" element={<ReaderBooks />} />
+          <Route path="/librarianEditBooks" element={<LibrarianEditBooks />}>
+            <Route path="add" element={<AddBook />} />
+            <Route path="update" element={<UpdateBook />} />
+            <Route path="delete" element={<DeleteBook />} />
+          </Route>
+        </Routes>
+      </ApiProvider>
     </BrowserRouter>
   );
 }
