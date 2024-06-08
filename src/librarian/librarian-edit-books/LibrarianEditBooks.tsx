@@ -3,9 +3,11 @@ import { Outlet, Link } from 'react-router-dom';
 import { TextField, Button, Grid, Tabs, Tab, Box } from '@mui/material';
 import { useState } from 'react';
 import MenuAppBar from '../../main-bar/AppBar';
+import { useTranslation } from 'react-i18next';
 
 const LibrarianEditBooks: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
+  const { t } = useTranslation();
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabIndex(newValue);
@@ -21,9 +23,9 @@ const LibrarianEditBooks: React.FC = () => {
           aria-label="Book Management Tabs"
           color="black"
         >
-          <Tab label="Add" component={Link} to="add" />
-          <Tab label="Update" component={Link} to="update" />
-          <Tab label="Delete" component={Link} to="delete" />
+          <Tab label={t('add_tab')} component={Link} to="add" />
+          <Tab label={t('update_tab')} component={Link} to="update" />
+          <Tab label={t('delete_tab')} component={Link} to="delete" />
         </Tabs>
         <Outlet />
       </Box>

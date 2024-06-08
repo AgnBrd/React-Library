@@ -13,7 +13,7 @@ function ReaderHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/bookList"
+          to="/readerBook"
         >
           <Typography
             variant="h6"
@@ -27,7 +27,7 @@ function ReaderHomePage() {
           variant="outlined"
           className="homepage-paper"
           component={Link}
-          to="/readerLoanList"
+          to="/readerLoan"
         >
           <Typography
             variant="h6"

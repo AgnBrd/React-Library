@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
 import './LibrarianEditBooks.css';
+import { useTranslation } from 'react-i18next';
 
 const AddBookForm: React.FC = () => {
   const [id, setId] = useState<string>('');
@@ -11,9 +12,11 @@ const AddBookForm: React.FC = () => {
   const [publisher, setPublisher] = useState<string>('');
   const [publicationYear, setPublicationYear] = useState<number>(0);
 
+  const { t } = useTranslation();
+
   return (
     <div className="librarian-edit-books">
-      <h2>Add a New Book</h2>
+      <h2>{t('add_book')}</h2>
       <Grid container spacing={2} direction="column">
         <Grid item xs={12}>
           <TextField
@@ -75,7 +78,7 @@ const AddBookForm: React.FC = () => {
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary">
-            Add Book
+            {t('add_book')}
           </Button>
         </Grid>
       </Grid>

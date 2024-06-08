@@ -5,5 +5,17 @@
   "view_readers": "View readers",
   "edit_books": "Edit books",
   "search_for_your_book": "Search for your book",
-  "books_table": "Books"
+  "books_table": "Books",
+  "all_loans": "All loans",
+  "loans_table": "Loans",
+  "all_readers": "All readers",
+  "readers_table": "Readers",
+  "add_tab": "Add",
+  "update_tab": "Update",
+  "delete_tab": "Delete",
+  "add_book": "Add book",
+  "update_book": "Update book",
+  "delete_book": "Delete book",
+  "loan_button": "Loan",
+  "your_loans": "Your loans"
 }

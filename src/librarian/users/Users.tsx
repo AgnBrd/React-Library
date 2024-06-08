@@ -21,6 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import './Users.css';
 import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
+import { useTranslation } from 'react-i18next';
 
 interface Data {
   id: number;
@@ -189,6 +190,7 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
+  const { t } = useTranslation();
 
   return (
     <Toolbar
@@ -220,7 +222,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Readers
+          {t('readers_table')}
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -246,6 +248,8 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const { t } = useTranslation();
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -333,7 +337,7 @@ export default function EnhancedTable() {
           fontSize: 40,
         }}
       >
-        All readers
+        {t('all_readers')}
       </h1>
       <Box
         sx={{

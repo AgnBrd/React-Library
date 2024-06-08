@@ -20,6 +20,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import MenuAppBar from '../../main-bar/AppBar';
 import './ReaderLoans.css';
+import { useTranslation } from 'react-i18next';
 
 interface Data {
   id: number;
@@ -195,6 +196,7 @@ interface EnhancedTableToolbarProps {
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+  const { t } = useTranslation();
   const { numSelected } = props;
 
   return (
@@ -227,21 +229,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Loans
+          {t('loans_table')}
         </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
       )}
     </Toolbar>
   );
@@ -253,6 +242,8 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const { t } = useTranslation();
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -340,7 +331,7 @@ export default function EnhancedTable() {
           fontSize: 40,
         }}
       >
-        Your loans
+        {t('your_loans')}
       </h1>
       <Box
         sx={{

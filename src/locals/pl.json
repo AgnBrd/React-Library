@@ -5,5 +5,17 @@
   "view_readers": "Czytelnicy",
   "edit_books": "Edytuj książki",
   "search_for_your_book": "Znajdź swoją książkę",
-  "books_table": "Książki"
+  "books_table": "Książki",
+  "all_loans": "Wypożyczenia",
+  "loans_table": "Wypożyczenia",
+  "all_readers": "Czytelnicy",
+  "readers_table": "Czytelnicy",
+  "add_tab": "dodaj",
+  "update_tab": "zmień",
+  "delete_tab": "usuń",
+  "add_book": "Dodaj książkę",
+  "update_book": "Zmień dane książki",
+  "delete_book": "Usuń książkę",
+  "loan_button": "Wypożycz",
+  "your_loans": "Twoje wypożyczenia"
 }
