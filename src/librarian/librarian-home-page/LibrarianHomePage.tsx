@@ -2,10 +2,12 @@ import { Box, Paper, Typography } from '@mui/material';
 import MenuAppBar from '../../main-bar/AppBar';
 import { Link, Outlet } from 'react-router-dom';
 import './LibrarianHomePage.css';
-import { useApi } from '../../api/ApiProvider'; // Import the CSS file
+import { useApi } from '../../api/ApiProvider';
+import { useTranslation } from 'react-i18next'; // Import the CSS file
 
 function LibrarianHomePage() {
   const apiClient = useApi();
+  const { t } = useTranslation();
 
   apiClient.getBooks().then((response) => {
     console.log(response);
@@ -26,7 +28,7 @@ function LibrarianHomePage() {
             component="div"
             className="homepage-typography"
           >
-            Search books
+            {t('search_books')}
           </Typography>
         </Paper>
         <Paper
@@ -40,7 +42,7 @@ function LibrarianHomePage() {
             component="div"
             className="homepage-typography"
           >
-            View loans
+            {t('view_loans')}
           </Typography>
         </Paper>
         <Paper
@@ -54,7 +56,7 @@ function LibrarianHomePage() {
             component="div"
             className="homepage-typography"
           >
-            View readers
+            {t('view_readers')}
           </Typography>
         </Paper>
         <Paper
@@ -68,7 +70,7 @@ function LibrarianHomePage() {
             component="div"
             className="homepage-typography"
           >
-            Edit books
+            {t('edit_books')}
           </Typography>
         </Paper>
       </Box>

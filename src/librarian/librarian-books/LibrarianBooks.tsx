@@ -21,6 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import './LibrarianBooks.css';
 import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
+import { useTranslation } from 'react-i18next';
 
 interface Data {
   id: number;
@@ -361,6 +362,7 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
+  const { t } = useTranslation();
 
   return (
     <Toolbar
@@ -392,7 +394,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Books
+          {t('books_table')}
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -419,6 +421,7 @@ export default function EnhancedTable() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const { t } = useTranslation();
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
@@ -505,7 +508,7 @@ export default function EnhancedTable() {
           fontSize: 40,
         }}
       >
-        Search for your book
+        {t('search_for_your_book')}
       </h1>
       <Box
         sx={{

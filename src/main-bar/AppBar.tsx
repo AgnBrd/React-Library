@@ -3,13 +3,10 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import './AppBar.css';
-import { useNavigate, Link } from 'react-router-dom';
 import { LogoutRounded } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import { useTranslation } from 'react-i18next';
 
 export default function MenuAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -23,6 +20,12 @@ export default function MenuAppBar() {
   };
 
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const handleLanguageChange = () => {
+    const newLanguage = i18n.language === 'en' ? 'pl' : 'en';
+    i18n.changeLanguage(newLanguage);
+  };
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'black' }}>
@@ -36,9 +39,12 @@ export default function MenuAppBar() {
             to="/librarianHome"
             style={{ color: 'inherit', textDecoration: 'none' }}
           >
-            Library
+            {t('library')}
           </Link>
         </Typography>
+        <Button color="inherit" onClick={handleLanguageChange}>
+          {i18n.language === 'en' ? 'Polski' : 'English'}
+        </Button>
         <div>
           <IconButton
             size="large"
@@ -50,24 +56,6 @@ export default function MenuAppBar() {
           >
             <LogoutRounded />
           </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>My account</MenuItem>
-          </Menu>
         </div>
       </Toolbar>
     </AppBar>
