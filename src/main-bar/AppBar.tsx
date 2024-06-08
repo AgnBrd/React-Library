@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { LogoutRounded } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +20,7 @@ export default function MenuAppBar() {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
 
   const handleLanguageChange = () => {
@@ -31,16 +32,21 @@ export default function MenuAppBar() {
     <AppBar position="static" sx={{ backgroundColor: 'black' }}>
       <Toolbar>
         <Typography
-          variant="h5"
           component="div"
           sx={{ flexGrow: 1, fontFamily: 'Palatino Linotype' }}
         >
-          <Link
-            to="/librarianHome"
-            style={{ color: 'inherit', textDecoration: 'none' }}
+          <Button
+            onClick={() => navigate(-1)}
+            style={{
+              color: 'inherit',
+              fontFamily: 'Palatino Linotype',
+              fontSize: '1.8rem',
+              flexGrow: '1',
+              textTransform: 'none',
+            }}
           >
             {t('library')}
-          </Link>
+          </Button>
         </Typography>
         <Button color="inherit" onClick={handleLanguageChange}>
           {i18n.language === 'en' ? 'Polski' : 'English'}
