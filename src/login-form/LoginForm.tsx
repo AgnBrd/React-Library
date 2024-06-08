@@ -13,10 +13,17 @@ function LoginForm() {
   const onSubmit = useCallback(
     (values: { username: string; password: string }, formik: any) => {
       apiClient.login(values).then((response) => {
-        if (response.success) {
-          navigate('/librarianHome');
+        if (response.success && response.data && response.data.role) {
+          const roles = response.data.role; // Zakładamy, że odpowiedź zawiera pole "roles"
+          if (roles.includes('ROLE_EMPLOYEE') || roles.includes('ROLE_ADMIN')) {
+            navigate('/librarianHome');
+          } else if (roles.includes('ROLE_READER')) {
+            navigate('/readerHome');
+          } else {
+            formik.setFieldError('username', 'Unknown user role');
+          }
         } else {
-          formik.setFieldError('username', 'Invalide username or password');
+          formik.setFieldError('username', 'Invalid username or password');
         }
       });
     },

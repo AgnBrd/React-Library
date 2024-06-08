@@ -9,9 +9,9 @@ function LibrarianHomePage() {
   const apiClient = useApi();
   const { t } = useTranslation();
 
-  apiClient.getBooks().then((response) => {
-    console.log(response);
-  });
+  // apiClient.getBooks().then((response) => {
+  //   console.log(response);
+  // });
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MenuAppBar />
