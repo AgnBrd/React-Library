@@ -21,6 +21,7 @@ import { visuallyHidden } from '@mui/utils';
 import MenuAppBar from '../../main-bar/AppBar';
 import './LibrarianLoans.css';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../../api/ApiProvider';
 
 interface Data {
   id: number;
@@ -30,29 +31,6 @@ interface Data {
   user_id: number;
   book_id: number;
 }
-
-function createLoanData(
-  id: number,
-  end_date: string,
-  loan_date: string,
-  return_date: string,
-  user_id: number,
-  book_id: number,
-): Data {
-  return {
-    id,
-    end_date,
-    loan_date,
-    return_date,
-    user_id,
-    book_id,
-  };
-}
-
-const rows = [
-  createLoanData(1, '2024-05-22', '2024-05-21', '2024-06-21', 1, 1),
-  createLoanData(2, '2024-05-20', '2024-05-18', '2024-06-18', 2, 2),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -258,14 +236,29 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 export default function EnhancedTable() {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('id');
+  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState([]);
 
   const { t } = useTranslation();
+  const apiClient = useApi();
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.getLoans();
+        setRows(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [apiClient]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -285,9 +278,9 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -301,25 +294,24 @@ export default function EnhancedTable() {
         selected.slice(selectedIndex + 1),
       );
     }
+
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -330,7 +322,7 @@ export default function EnhancedTable() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, rows],
   );
 
   return (
@@ -422,7 +414,7 @@ export default function EnhancedTable() {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={7} />
                   </TableRow>
                 )}
               </TableBody>

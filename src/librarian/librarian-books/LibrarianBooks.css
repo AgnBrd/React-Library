@@ -1,9 +1,9 @@
 .Books-form {
-    padding: 5rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2rem;
+    gap: 0rem;
     align-items: center;
     background-color: gainsboro;
     /*color: white;*/

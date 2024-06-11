@@ -13,15 +13,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import './LibrarianBooks.css';
 import { visuallyHidden } from '@mui/utils';
 import './LibrarianBooks.css';
-import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../../api/ApiProvider';
 
 interface Data {
   id: number;
@@ -32,177 +29,6 @@ interface Data {
   publisher: string;
   publication_year: number;
 }
-
-function createBookData(
-  id: number,
-  isbn: string,
-  title: string,
-  author: string,
-  avaliable_copies: number,
-  publisher: string,
-  publication_year: number,
-): Data {
-  return {
-    id,
-    isbn,
-    title,
-    author,
-    avaliable_copies,
-    publisher,
-    publication_year,
-  };
-}
-
-const rows = [
-  createBookData(
-    1,
-    '842468170-3',
-    'Chinese Zodiac (Armour of God III) (CZ12)',
-    'Starsmeare',
-    1,
-    'Corse',
-    2007,
-  ),
-  createBookData(
-    2,
-    '376287635-5',
-    'Diminished Capacity',
-    'Dellenbroker',
-    2,
-    'Guislin',
-    2017,
-  ),
-  createBookData(
-    3,
-    '787190103-6',
-    'All That... for This?!',
-    'Keri',
-    3,
-    'Dymidowski',
-    2011,
-  ),
-  createBookData(
-    4,
-    '037958332-1',
-    'Angel in Cracow (Aniol w Krakowie)',
-    'Flieg',
-    4,
-    'Raspison',
-    2007,
-  ),
-  createBookData(5, '260233828-1', 'Lawless', 'Danilin', 5, 'Pharro', 2012),
-  createBookData(6, '806472578-X', 'Starsky & Hutch', 'Bartos', 6, 'Odd', 2013),
-  createBookData(
-    7,
-    '087956961-1',
-    'NeverEnding Story II: The Next Chapter, The',
-    'Dowd',
-    7,
-    'Haynesford',
-    2020,
-  ),
-  createBookData(
-    8,
-    '857916622-5',
-    'California Solo',
-    'Matlock',
-    8,
-    'Tomalin',
-    2010,
-  ),
-  createBookData(
-    9,
-    '717089759-8',
-    'Man There Was, A (Terje Vigen)',
-    'Poker',
-    9,
-    'Osant',
-    2020,
-  ),
-  createBookData(
-    10,
-    '573194175-0',
-    'Box, The',
-    'Etchells',
-    10,
-    'Sebrens',
-    2017,
-  ),
-  createBookData(
-    11,
-    '133468410-3',
-    'Indian Runner, The',
-    'Sangar',
-    11,
-    'Klulik',
-    2015,
-  ),
-  createBookData(
-    12,
-    '326589607-2',
-    'Run of the Country, The',
-    'Standen',
-    12,
-    'Works',
-    2004,
-  ),
-  createBookData(
-    13,
-    '424414552-4',
-    'Arch of Triumph',
-    'Fozard',
-    13,
-    'Emsden',
-    2018,
-  ),
-  createBookData(
-    14,
-    '767953407-1',
-    'Bells Are Ringing',
-    'Aust',
-    14,
-    'Madden',
-    2007,
-  ),
-  createBookData(
-    15,
-    '120089222-4',
-    'City Zero',
-    'Reisenstein',
-    15,
-    'Stamps',
-    2012,
-  ),
-  createBookData(
-    16,
-    '885090638-2',
-    'Hue and Cry',
-    'Jewett',
-    16,
-    'Fortman',
-    2013,
-  ),
-  createBookData(17, '266235024-5', 'Grouse', 'Leat', 17, 'Wingeatt', 1997),
-  createBookData(
-    18,
-    '260046321-6',
-    'Velvet Goldmine',
-    'Ogborne',
-    18,
-    'Skitteral',
-    2005,
-  ),
-  createBookData(19, '053342039-3', 'Almost 18', 'Relfe', 19, 'Downing', 2013),
-  createBookData(
-    20,
-    '586818243-X',
-    'Chandni Chowk to China',
-    'Tomczak',
-    20,
-    'Azam',
-    2019,
-  ),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -277,9 +103,9 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'avaliable_copies',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
-    label: 'Available copies',
+    label: 'Avaliable copies',
   },
   {
     id: 'publisher',
@@ -289,7 +115,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'publication_year',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Year of publication',
   },
@@ -397,19 +223,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {t('books_table')}
         </Typography>
       )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
     </Toolbar>
   );
 }
@@ -420,8 +233,24 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState<Data[]>([]);
 
   const { t } = useTranslation();
+  const apiClient = useApi();
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.getBooks();
+        setRows(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [apiClient]);
+
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
@@ -456,6 +285,7 @@ export default function EnhancedTable() {
         selected.slice(selectedIndex + 1),
       );
     }
+
     setSelected(newSelected);
   };
 
@@ -477,16 +307,7 @@ export default function EnhancedTable() {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-      ),
-    [order, orderBy, page, rowsPerPage],
-  );
+    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div
@@ -536,49 +357,55 @@ export default function EnhancedTable() {
                 rowCount={rows.length}
               />
               <TableBody>
-                {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="left">{row.isbn}</TableCell>
-                      <TableCell align="left">{row.title}</TableCell>
-                      <TableCell align="left">{row.author}</TableCell>
-                      <TableCell align="left">{row.avaliable_copies}</TableCell>
-                      <TableCell align="left">{row.publisher}</TableCell>
-                      <TableCell align="left">{row.publication_year}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.id}
+                        </TableCell>
+                        <TableCell>{row.isbn}</TableCell>
+                        <TableCell>{row.title}</TableCell>
+                        <TableCell>{row.author}</TableCell>
+                        <TableCell align="right">
+                          {row.avaliable_copies}
+                        </TableCell>
+                        <TableCell>{row.publisher}</TableCell>
+                        <TableCell align="right">
+                          {row.publication_year}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={7} />
                   </TableRow>
                 )}
               </TableBody>

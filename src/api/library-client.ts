@@ -39,24 +39,44 @@ export class LibraryClient {
       };
     }
   }
-  //   public async getBooks(): Promise<ClientResponse<any | null>> {
-  //     try {
-  //       const response = await this.client.get('/books');
-  //
-  //       return {
-  //         success: true,
-  //         data: response.data,
-  //         statusCode: response.status,
-  //       };
-  //     } catch (error) {
-  //       const axiosError = error as AxiosError<Error>;
-  //
-  //       return {
-  //         success: false,
-  //         data: null,
-  //         statusCode: axiosError.response?.status || 0,
-  //       };
-  //     }
-  //   }
+  public async getBooks(): Promise<ClientResponse<any | null>> {
+    try {
+      const response = await this.client.get('api/books');
+
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+  public async getLoans(): Promise<ClientResponse<any | null>> {
+    try {
+      const response = await this.client.get('api/loans');
+
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
 }
 export {};
