@@ -79,18 +79,8 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: 'id',
-    numeric: true,
-    disablePadding: false,
-    label: 'ID',
-  },
-  {
-    id: 'end_date',
-    numeric: false,
-    disablePadding: false,
-    label: 'End Date',
-  },
+  { id: 'id', numeric: true, disablePadding: false, label: 'ID' },
+  { id: 'end_date', numeric: false, disablePadding: false, label: 'End Date' },
   {
     id: 'loan_date',
     numeric: false,
@@ -103,18 +93,8 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Return Date',
   },
-  {
-    id: 'user_id',
-    numeric: true,
-    disablePadding: false,
-    label: 'User ID',
-  },
-  {
-    id: 'book_id',
-    numeric: true,
-    disablePadding: false,
-    label: 'Book ID',
-  },
+  { id: 'user_id', numeric: true, disablePadding: false, label: 'User ID' },
+  { id: 'book_id', numeric: true, disablePadding: false, label: 'Book ID' },
 ];
 
 interface EnhancedTableProps {
@@ -152,13 +132,16 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
+            inputProps={{ 'aria-label': 'select all loans' }}
           />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell>
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
@@ -235,14 +218,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
+
 export default function EnhancedTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('id');
-  const [selected, setSelected] = React.useState([]);
+  const [order, setOrder] = React.useState<Order>('asc');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
+  const [selected, setSelected] = React.useState<number[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = React.useState<Data[]>([]);
 
   const { t } = useTranslation();
   const apiClient = useApi();
@@ -250,7 +234,8 @@ export default function EnhancedTable() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.getLoans();
+        const response = await apiClient.getAllLoans();
+        console.log('Fetched data:', response.data); // Logowanie danych
         setRows(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -278,9 +263,9 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const handleClick = (event, id) => {
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -298,20 +283,22 @@ export default function EnhancedTable() {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
+  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
-  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -374,6 +361,7 @@ export default function EnhancedTable() {
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
+                  console.log('Row data:', row); // Logowanie danych każdego wiersza
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -392,9 +380,7 @@ export default function EnhancedTable() {
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
+                          inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
@@ -403,17 +389,13 @@ export default function EnhancedTable() {
                       <TableCell align="left">{row.end_date}</TableCell>
                       <TableCell align="left">{row.loan_date}</TableCell>
                       <TableCell align="left">{row.return_date}</TableCell>
-                      <TableCell align="left">{row.user_id}</TableCell>
-                      <TableCell align="left">{row.book_id}</TableCell>
+                      <TableCell align="right">{row.user_id}</TableCell>
+                      <TableCell align="right">{row.book_id}</TableCell>
                     </TableRow>
                   );
                 })}
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                  >
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={7} />
                   </TableRow>
                 )}

@@ -9,7 +9,7 @@ const DeleteBookForm: React.FC = () => {
   return (
     <div className="librarian-edit-books">
       <h2>{t('delete_book')}</h2>
-      <Grid container spacing={2} direction="column">
+      <Grid container spacing={1} direction="column">
         <Grid item xs={12}>
           <TextField
             label="ID"
@@ -18,7 +18,7 @@ const DeleteBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={12} style={{ textAlign: 'center' }}>
           <Button variant="contained" color="primary">
             {t('delete_book')}
           </Button>

@@ -17,8 +17,8 @@ const AddBookForm: React.FC = () => {
   return (
     <div className="librarian-edit-books">
       <h2>{t('add_book')}</h2>
-      <Grid container spacing={2} direction="column">
-        <Grid item xs={12}>
+      <Grid container spacing={1} style={{ maxWidth: '400px' }}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="ID"
             value={id}
@@ -26,7 +26,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="ISBN"
             value={isbn}
@@ -34,7 +34,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="Title"
             value={title}
@@ -42,7 +42,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="Author"
             value={author}
@@ -50,7 +50,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="Available Copies"
             type="number"
@@ -59,7 +59,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="Publisher"
             value={publisher}
@@ -67,7 +67,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <TextField
             label="Publication Year"
             type="number"
@@ -76,7 +76,7 @@ const AddBookForm: React.FC = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} style={{ textAlign: 'center' }}>
           <Button variant="contained" color="primary">
             {t('add_book')}
           </Button>

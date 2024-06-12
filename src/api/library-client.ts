@@ -59,7 +59,7 @@ export class LibraryClient {
     }
   }
 
-  public async getLoans(): Promise<ClientResponse<any | null>> {
+  public async getAllLoans(): Promise<ClientResponse<any | null>> {
     try {
       const response = await this.client.get('api/loans');
 

@@ -4,6 +4,7 @@ import { TextField, Button, Grid, Tabs, Tab, Box } from '@mui/material';
 import { useState } from 'react';
 import MenuAppBar from '../../main-bar/AppBar';
 import { useTranslation } from 'react-i18next';
+import './LibrarianEditBooks.css';
 
 const LibrarianEditBooks: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);

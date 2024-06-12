@@ -1,6 +1,7 @@
 html, body {
     height: 100%;
     margin: 0;
+    background-color: gainsboro;
 }
 
 .librarian-edit-books {
@@ -32,12 +33,13 @@ html, body {
 }
 
 .librarian-edit-books .MuiButton-root {
-    width: 100%; /* Half width of the container */
+    width: 60%; /* Half width of the container */
     padding: 0.5rem;
     font-size: 1rem;
     font-family: 'Palatino Linotype';
     background-color: darkgrey;
     color: black;
     align-content: center;
+    align-items: center;
     margin-top: 1rem; /* Spacing above the button */
 }
