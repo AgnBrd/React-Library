@@ -16,7 +16,7 @@ body, html {
 
 .login-image {
     flex: 1;
-    background-image: url('./iStock-486933494.jpg'); /* Zaktualizuj ścieżkę do swojego obrazu */
+    background-image: url('./iStock-486933494.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

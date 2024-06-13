@@ -7,37 +7,37 @@ function ReaderHomePage() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MenuAppBar />
-      <Box className="homepage-container">
-        <div className="background-image"></div>
+      <Box className="reader-homepage-container">
         <Paper
           variant="outlined"
-          className="homepage-paper"
+          className="reader-homepage-paper"
           component={Link}
           to="/readerBook"
         >
           <Typography
             variant="h6"
             component="div"
-            className="homepage-typography"
+            className="reader-homepage-typography"
           >
             Search books
           </Typography>
         </Paper>
         <Paper
           variant="outlined"
-          className="homepage-paper"
+          className="reader-homepage-paper"
           component={Link}
           to="/readerLoan"
         >
           <Typography
             variant="h6"
             component="div"
-            className="homepage-typography"
+            className="reader-homepage-typography"
           >
             View your loans
           </Typography>
         </Paper>
       </Box>
+      <div className="reader-background-image"></div>
       <Outlet />
     </Box>
   );

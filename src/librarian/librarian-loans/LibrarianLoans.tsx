@@ -315,12 +315,9 @@ export default function EnhancedTable() {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
         backgroundColor: 'darkgray',
-        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <MenuAppBar />
@@ -339,15 +336,14 @@ export default function EnhancedTable() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '100vh',
-          backgroundColor: 'darkgray',
+          width: '100%',
         }}
       >
-        <Paper sx={{ width: '100%', mb: 40, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '60%', mb: 40, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
-              sx={{ minWidth: 750 }}
+              sx={{ minWidth: 600 }}
               aria-labelledby="tableTitle"
               size={dense ? 'small' : 'medium'}
             >

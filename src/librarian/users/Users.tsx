@@ -18,37 +18,18 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import './Users.css';
-import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
+import './Users.css';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../../api/ApiProvider';
 
 interface Data {
   id: number;
   email: string;
   name: string;
   username: string;
+  role: string; // New field: role
 }
-
-function createUserData(
-  id: number,
-  email: string,
-  name: string,
-  username: string,
-): Data {
-  return {
-    id,
-    email,
-    name,
-    username,
-  };
-}
-
-const rows = [
-  createUserData(1, 'a@mail.com', 'Jon', 'Jon123'),
-  createUserData(2, 'b@mail.com', 'Jane', 'Jane123'),
-  createUserData(3, 'c@mail.com', 'Ben', 'Ben123'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -75,9 +56,13 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(
-  array: readonly T[],
+  array: readonly T[] | null | undefined,
   comparator: (a: T, b: T) => number,
 ) {
+  if (!array) {
+    return [];
+  }
+
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -97,30 +82,11 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: 'id',
-    numeric: true,
-    disablePadding: false,
-    label: 'ID',
-  },
-  {
-    id: 'email',
-    numeric: false,
-    disablePadding: false,
-    label: 'Email',
-  },
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: false,
-    label: 'Name',
-  },
-  {
-    id: 'username',
-    numeric: false,
-    disablePadding: false,
-    label: 'Username',
-  },
+  { id: 'id', numeric: true, disablePadding: false, label: 'ID' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
+  { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'username', numeric: false, disablePadding: false, label: 'Username' },
+  { id: 'role', numeric: false, disablePadding: false, label: 'Role' },
 ];
 
 interface EnhancedTableProps {
@@ -164,7 +130,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell>
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+          >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
@@ -241,6 +210,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
+
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
@@ -248,9 +218,29 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState<Data[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   const { t } = useTranslation();
+  const apiClient = useApi();
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.getUsers();
+        console.log('Fetched data:', response.data);
+        setRows(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [apiClient]);
+
+  // Obsługa sortowania tabeli
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
@@ -260,6 +250,7 @@ export default function EnhancedTable() {
     setOrderBy(property);
   };
 
+  // Obsługa zaznaczania wszystkich checkboxów
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
@@ -269,6 +260,7 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
+  // Obsługa kliknięcia na wiersz tabeli
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
@@ -288,10 +280,12 @@ export default function EnhancedTable() {
     setSelected(newSelected);
   };
 
+  // Obsługa zmiany strony tabeli
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
+  // Obsługa zmiany liczby wierszy na stronie
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -299,33 +293,34 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
+  // Obsługa zmiany gęstości tabeli
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
+  // Sprawdzenie czy wiersz jest zaznaczony
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
+  // Obliczenie liczby pustych wierszy
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  // Pobranie widocznych wierszy z użyciem useMemo
   const visibleRows = React.useMemo(
     () =>
       stableSort(rows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, rows],
   );
 
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
         backgroundColor: 'darkgray',
-        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <MenuAppBar />
@@ -344,18 +339,13 @@ export default function EnhancedTable() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '100vh',
-          backgroundColor: 'darkgray',
+          width: '100%',
         }}
       >
-        <Paper sx={{ width: '95%', mb: 30, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '70%', mb: 30, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-            >
+            <Table sx={{ minWidth: 750 }} size={dense ? 'small' : 'medium'}>
               <EnhancedTableHead
                 numSelected={selected.length}
                 order={order}
@@ -392,18 +382,16 @@ export default function EnhancedTable() {
                       <TableCell component="th" id={labelId} scope="row">
                         {row.id}
                       </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.username}</TableCell>
+                      <TableCell align="left">{row.role}</TableCell>{' '}
+                      {/* New column "Role" */}
                     </TableRow>
                   );
                 })}
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                  >
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )}

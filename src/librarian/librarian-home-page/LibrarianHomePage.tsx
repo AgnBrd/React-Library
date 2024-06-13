@@ -3,20 +3,16 @@ import MenuAppBar from '../../main-bar/AppBar';
 import { Link, Outlet } from 'react-router-dom';
 import './LibrarianHomePage.css';
 import { useApi } from '../../api/ApiProvider';
-import { useTranslation } from 'react-i18next'; // Import the CSS file
+import { useTranslation } from 'react-i18next';
 
 function LibrarianHomePage() {
   const apiClient = useApi();
   const { t } = useTranslation();
 
-  // apiClient.getBooks().then((response) => {
-  //   console.log(response);
-  // });
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MenuAppBar />
       <Box className="homepage-container">
-        <div className="background-image"></div>
         <Paper
           variant="outlined"
           className="homepage-paper"
@@ -74,6 +70,7 @@ function LibrarianHomePage() {
           </Typography>
         </Paper>
       </Box>
+      <div className="librarian-image" />
       <Outlet />
     </Box>
   );

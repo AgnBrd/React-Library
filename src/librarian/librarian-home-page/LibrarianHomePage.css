@@ -1,11 +1,21 @@
 /* LibrarianHomePage.css */
 
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .homepage-container {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
     background-color: darkgray;
+    position: relative;
+    z-index: 1; /* Ensure that it's above the image */
 }
 
 .homepage-paper {
@@ -22,18 +32,16 @@
     font-family: Palatino Linotype;
 }
 
-.background-image {
-    position: absolute;
-    top: 0;
-    left: 0;
+.librarian-image {
     width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-image: url('iStock-1261031316.jpg'); /* Update the path to your image */
+    height: 50%;
+    background-image: url('iStock-1261031316.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.8; /* Optional: Adjust opacity for better contrast */
+    opacity: 0.8;
+    z-index: 0;
+    bottom: 0;
 }
 
 .homepage-paper:hover {

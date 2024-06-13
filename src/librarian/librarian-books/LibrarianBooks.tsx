@@ -312,12 +312,7 @@ export default function EnhancedTable() {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
         backgroundColor: 'darkgray',
-        flexDirection: 'column',
       }}
     >
       <MenuAppBar />
@@ -327,6 +322,7 @@ export default function EnhancedTable() {
           textAlign: 'center',
           fontFamily: 'Palatino Linotype',
           fontSize: 40,
+          marginBottom: 0,
         }}
       >
         {t('search_for_your_book')}
