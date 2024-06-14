@@ -21,35 +21,15 @@ import { visuallyHidden } from '@mui/utils';
 import MenuAppBar from '../../main-bar/AppBar';
 import './ReaderLoans.css';
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../../api/ApiProvider';
 
 interface Data {
   id: number;
   end_date: string;
   loan_date: string;
   return_date: string;
-  book_title: string;
+  title: string;
 }
-
-function createLoanData(
-  id: number,
-  end_date: string,
-  loan_date: string,
-  return_date: string,
-  book_title: string,
-): Data {
-  return {
-    id,
-    end_date,
-    loan_date,
-    return_date,
-    book_title,
-  };
-}
-
-const rows = [
-  createLoanData(1, '2024-05-22', '2024-05-21', '2024-06-21', 'pierwsza'),
-  createLoanData(2, '2024-05-20', '2024-05-18', '2024-06-18', 'druga'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -123,7 +103,7 @@ const headCells: readonly HeadCell[] = [
     label: 'Return Date',
   },
   {
-    id: 'book_title',
+    id: 'title',
     numeric: false,
     disablePadding: false,
     label: 'Book Title',
@@ -242,8 +222,24 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rows, setRows] = React.useState<Data[]>([]);
 
   const { t } = useTranslation();
+  const apiClient = useApi();
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.getAllLoans();
+        console.log('Fetched data:', response.data); // Logowanie danych
+        setRows(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [apiClient]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -317,7 +313,6 @@ export default function EnhancedTable() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
         backgroundColor: 'darkgray',
         flexDirection: 'column',
       }}
@@ -389,7 +384,7 @@ export default function EnhancedTable() {
                       <TableCell align="left">{row.end_date}</TableCell>
                       <TableCell align="left">{row.loan_date}</TableCell>
                       <TableCell align="left">{row.return_date}</TableCell>
-                      <TableCell align="left">{row.book_title}</TableCell>
+                      <TableCell align="left">{row.title}</TableCell>
                     </TableRow>
                   );
                 })}

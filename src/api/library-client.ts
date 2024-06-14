@@ -98,5 +98,26 @@ export class LibraryClient {
       };
     }
   }
+
+  public async AddBook(): Promise<ClientResponse<any | null>> {
+    try {
+      const response = await this.client.post('api/users');
+
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
 }
+
 export {};

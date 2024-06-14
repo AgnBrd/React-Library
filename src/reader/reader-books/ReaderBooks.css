@@ -1,9 +1,9 @@
 .reader_books {
-    padding: 5rem;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2rem;
+    gap: 1rem;
     align-items: center;
     background-color: gainsboro;
     /*color: white;*/

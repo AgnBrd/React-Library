@@ -346,7 +346,7 @@ export default function EnhancedTable() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        minHeight: '100vh',
+        // minHeight: '100vh',
         backgroundColor: 'darkgray',
         flexDirection: 'column',
       }}
@@ -371,7 +371,7 @@ export default function EnhancedTable() {
           backgroundColor: 'darkgray',
         }}
       >
-        <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '80%', mb: 0, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
