@@ -3,7 +3,7 @@ import { LoginDto, LoginResponseDto } from './dto/login.dto';
 
 export type ClientResponse<T> = {
   success: boolean;
-  data: T;
+  data: T | null;
   statusCode: number;
 };
 
@@ -120,7 +120,7 @@ export class LibraryClient {
     role: string,
   ): Promise<ClientResponse<any>> {
     try {
-      const response = await this.client.post('api/books', data); // Dodaj `data` jako drugi argument
+      const response = await this.client.post('api/books', data);
       return {
         success: true,
         data: response.data,
@@ -135,6 +135,7 @@ export class LibraryClient {
       };
     }
   }
+
   public async updateBook(
     id: string,
     data: {
@@ -149,6 +150,27 @@ export class LibraryClient {
   ): Promise<ClientResponse<any>> {
     try {
       const response = await this.client.patch(`api/books/${id}`, data);
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+  public async deleteBook(
+    id: string,
+    role: string,
+  ): Promise<ClientResponse<void>> {
+    try {
+      const response = await this.client.delete(`api/books/${id}`);
       return {
         success: true,
         data: response.data,
