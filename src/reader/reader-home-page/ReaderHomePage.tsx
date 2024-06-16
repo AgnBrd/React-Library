@@ -5,7 +5,7 @@ import './ReaderHomePage.css';
 
 function ReaderHomePage() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} className="reader-homepage">
       <MenuAppBar />
       <Box className="reader-homepage-container">
         <Paper

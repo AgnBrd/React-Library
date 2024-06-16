@@ -30,9 +30,9 @@ interface Data {
   return_date: string;
   book_id: number;
   user_id: number;
-  title: string;
 }
 
+title: string;
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -329,8 +329,9 @@ export default function EnhancedTable() {
 
   return (
     <div
+      className="Loans-form"
       style={{
-        display: 'flex',
+        // display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'darkgray',
@@ -350,14 +351,14 @@ export default function EnhancedTable() {
       </h1>
       <Box
         sx={{
-          display: 'flex',
+          // display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '100vh',
+          // minHeight: '100vh',
           backgroundColor: 'darkgray',
         }}
       >
-        <Paper sx={{ width: '100%', mb: 40, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '80%', mb: 40, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table

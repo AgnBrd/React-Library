@@ -1,4 +1,6 @@
-
+.reader-homepage {
+    width: 100vw;
+}
 .reader-homepage-container {
     display: flex;
     justify-content: center;

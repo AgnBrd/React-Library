@@ -15,11 +15,9 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import './ReaderBooks.css';
 import { Button } from '@mui/material';
-import { Formik } from 'formik';
 import MenuAppBar from '../../main-bar/AppBar';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../api/ApiProvider';
@@ -166,7 +164,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell>
+          <TableCell key={headCell.id}>
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
@@ -188,11 +186,38 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  selected: readonly number[];
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { t } = useTranslation();
-  const { numSelected } = props;
+  const { numSelected, selected } = props;
+  const { apiClient, setUser, user } = useApi();
+
+  const handleLoanClick = async () => {
+    if (selected.length === 0 || user?.id === undefined) {
+      return;
+    }
+
+    const bookId = selected[0];
+    const userId = user.id; // user.id jest już typu number, więc nie powinno być problemu z przypisaniem
+    const loanDate = new Date();
+    const endDate = new Date(loanDate);
+    endDate.setDate(loanDate.getDate() + 60);
+
+    try {
+      await apiClient.createLoan({
+        userID: userId,
+        bookID: bookId,
+        loanDate: loanDate.toISOString(),
+        endDate: endDate.toISOString(),
+      });
+      alert('Loan created successfully!');
+    } catch (error) {
+      console.error('Error creating loan:', error);
+      alert('Failed to create loan.');
+    }
+  };
 
   return (
     <Toolbar
@@ -243,39 +268,36 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             transition: 'background-color 0.3s',
             fontFamily: 'Palatino Linotype', // zmiana czcionki
           }}
+          onClick={handleLoanClick} // Dodaj obsługę kliknięcia
         >
           {t('loan_button')}
         </Button>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
+          <IconButton>{/*<FilterListIcon />*/}</IconButton>
         </Tooltip>
       )}
     </Toolbar>
   );
 }
 
-export default function EnhancedTable() {
+const ReaderBooks = () => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState<Data[]>([]);
-
-  const { t } = useTranslation();
-  const { apiClient, setUser, user } = useApi();
+  const { apiClient, user } = useApi();
 
   React.useEffect(() => {
+    // Fetch initial data from the backend
     const fetchData = async () => {
       try {
         const response = await apiClient.getBooks();
         setRows(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Failed to fetch books:', error);
       }
     };
 
@@ -293,8 +315,8 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
+      const newSelecteds = rows.map((n) => n.id);
+      setSelected(newSelecteds);
       return;
     }
     setSelected([]);
@@ -331,128 +353,91 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // minHeight: '100vh',
-        backgroundColor: 'darkgray',
-        flexDirection: 'column',
-      }}
-    >
+    <Box className="reader-books">
       <MenuAppBar />
-      <h1
-        style={{
-          color: 'black',
-          textAlign: 'center',
-          fontFamily: 'Palatino Linotype',
-          fontSize: 40,
-        }}
-      >
-        {t('search_for_your_book')}
-      </h1>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-          backgroundColor: 'darkgray',
-        }}
-      >
-        <Paper sx={{ width: '80%', mb: 0, backgroundColor: 'gainsboro' }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? 'small' : 'medium'}
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={rows.length}
-              />
-              <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+      <Paper className="reader-books-conteiner">
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          selected={selected}
+        />
+        <TableContainer className="reader-books-table">
+          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.id)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.id}
-                        selected={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                        >
-                          {row.id}
-                        </TableCell>
-                        <TableCell>{row.isbn}</TableCell>
-                        <TableCell>{row.title}</TableCell>
-                        <TableCell>{row.author}</TableCell>
-                        <TableCell align="right">
-                          {row.avaliable_copies}
-                        </TableCell>
-                        <TableCell>{row.publisher}</TableCell>
-                        <TableCell align="right">
-                          {row.publication_year}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                    <TableCell colSpan={7} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Box>
-    </div>
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell component="th" id={labelId} scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell>{row.isbn}</TableCell>
+                      <TableCell>{row.title}</TableCell>
+                      <TableCell>{row.author}</TableCell>
+                      <TableCell>{row.avaliable_copies}</TableCell>
+                      <TableCell>{row.publisher}</TableCell>
+                      <TableCell>{row.publication_year}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: 53 * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </Box>
   );
-}
+};
+
+export default ReaderBooks;

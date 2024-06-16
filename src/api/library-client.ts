@@ -160,6 +160,28 @@ export class LibraryClient {
     }
   }
 
+  public async createLoan(data: {
+    loanDate: string;
+    endDate: string;
+    userID: number;
+    bookID: number;
+  }): Promise<ClientResponse<any>> {
+    try {
+      const response = await this.client.post('/api/loans', data);
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
   public async updateBook(
     id: string,
     data: {

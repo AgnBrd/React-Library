@@ -1,28 +1,27 @@
-.reader_books {
-    padding: 2rem;
+.reader-books {
+    /*display: flex;*/
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: darkgray;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.reader-books-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1rem;
     align-items: center;
-    background-color: gainsboro;
-    /*color: white;*/
+    background-color: darkgray;
+    width: 50vw;
+    height: calc(100vh - 64px); /* Dla AppBar, zakładając wysokość 64px */
+    /*margin-top: 20px; !* Dodatkowy margines na górę *!*/
+    overflow: hidden;
 }
 
-.reader_button {
-    background-color: darkgrey; /* kolor tła */
-    border: none; /* usuwamy obramowanie */
-    color: white; /* kolor tekstu */
-    padding: 10px 20px; /* margines wewnętrzny */
-    text-align: center; /* wyśrodkowanie tekstu */
-    text-decoration: none; /* usuwamy podkreślenie */
-    display: inline-block;
-    font-size: 49px; /* rozmiar czcionki */
-    cursor: pointer; /* zmiana kursora na wskaźnik */
-    border-radius: 4px; /* zaokrąglenie rogów */
-    transition: background-color 0.3s; /* płynne przejście koloru tła */
-}
-
-.button:hover {
-    background-color: #0b7dda; /* zmiana koloru tła po najechaniu myszką */
+.reader-books-table {
+    width: 100%;
+    overflow-x: auto;
 }
