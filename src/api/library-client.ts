@@ -135,4 +135,32 @@ export class LibraryClient {
       };
     }
   }
+  public async updateBook(
+    id: string,
+    data: {
+      author: string;
+      isbn: string;
+      availableCopies: number;
+      publisher: string;
+      publicationYear: number;
+      title: string;
+    },
+    role: string,
+  ): Promise<ClientResponse<any>> {
+    try {
+      const response = await this.client.patch(`api/books/${id}`, data);
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
 }
