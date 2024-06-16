@@ -1,21 +1,30 @@
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { LibraryClient } from './library-client';
-import { createContext, useContext } from 'react';
+import { LoginResponseDto } from './dto/login.dto';
 
-const ApiContext = createContext(new LibraryClient());
+interface ApiContextProps {
+  apiClient: LibraryClient;
+  user: LoginResponseDto | null;
+  setUser: (user: LoginResponseDto | null) => void;
+}
 
-export default function ApiProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const ApiContext = createContext<ApiContextProps | undefined>(undefined);
+
+export default function ApiProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<LoginResponseDto | null>(null);
   const apiClient = new LibraryClient();
+
   return (
-    <ApiContext.Provider value={apiClient}>{children}</ApiContext.Provider>
+    <ApiContext.Provider value={{ apiClient, user, setUser }}>
+      {children}
+    </ApiContext.Provider>
   );
 }
 
 export function useApi() {
-  return useContext(ApiContext);
+  const context = useContext(ApiContext);
+  if (!context) {
+    throw new Error('useApi must be used within an ApiProvider');
+  }
+  return context;
 }
-
-export {};

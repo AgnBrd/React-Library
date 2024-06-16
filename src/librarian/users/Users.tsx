@@ -62,7 +62,6 @@ function stableSort<T>(
   if (!array) {
     return [];
   }
-
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -222,7 +221,7 @@ export default function EnhancedTable() {
   const [loading, setLoading] = React.useState(true);
 
   const { t } = useTranslation();
-  const apiClient = useApi();
+  const { apiClient, setUser, user } = useApi();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -240,7 +239,6 @@ export default function EnhancedTable() {
     fetchData();
   }, [apiClient]);
 
-  // Obsługa sortowania tabeli
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
@@ -250,7 +248,6 @@ export default function EnhancedTable() {
     setOrderBy(property);
   };
 
-  // Obsługa zaznaczania wszystkich checkboxów
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
@@ -260,7 +257,6 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  // Obsługa kliknięcia na wiersz tabeli
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
@@ -280,12 +276,10 @@ export default function EnhancedTable() {
     setSelected(newSelected);
   };
 
-  // Obsługa zmiany strony tabeli
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  // Obsługa zmiany liczby wierszy na stronie
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -293,19 +287,15 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  // Obsługa zmiany gęstości tabeli
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
 
-  // Sprawdzenie czy wiersz jest zaznaczony
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  // Obliczenie liczby pustych wierszy
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
-  // Pobranie widocznych wierszy z użyciem useMemo
   const visibleRows = React.useMemo(
     () =>
       stableSort(rows, getComparator(order, orderBy)).slice(
@@ -358,7 +348,6 @@ export default function EnhancedTable() {
                 {visibleRows.map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
@@ -385,8 +374,7 @@ export default function EnhancedTable() {
                       <TableCell align="left">{row.email}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.username}</TableCell>
-                      <TableCell align="left">{row.role}</TableCell>{' '}
-                      {/* New column "Role" */}
+                      <TableCell align="left">{row.role}</TableCell>
                     </TableRow>
                   );
                 })}

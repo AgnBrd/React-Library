@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosError, AxiosResponse } from 'axios';
 import { LoginDto, LoginResponseDto } from './dto/login.dto';
 
 export type ClientResponse<T> = {
@@ -9,9 +9,15 @@ export type ClientResponse<T> = {
 
 export class LibraryClient {
   private client: AxiosInstance;
+  private token: string | null = null;
 
   constructor() {
     this.client = axios.create({ baseURL: 'http://localhost:8081' });
+  }
+
+  private setToken(token: string) {
+    this.token = token;
+    this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
   public async login(
@@ -22,8 +28,10 @@ export class LibraryClient {
         'api/users/login',
         data,
       );
-      this.client.defaults.headers.common['Authorization'] =
-        'Bearer' + response.data.token;
+
+      if (response.data.token) {
+        this.setToken(response.data.token);
+      }
 
       return {
         success: true,
@@ -39,6 +47,7 @@ export class LibraryClient {
       };
     }
   }
+
   public async getBooks(): Promise<ClientResponse<any | null>> {
     try {
       const response = await this.client.get('api/books');
@@ -99,10 +108,19 @@ export class LibraryClient {
     }
   }
 
-  public async AddBook(): Promise<ClientResponse<any | null>> {
+  public async addBook(
+    data: {
+      author: string;
+      isbn: string;
+      availableCopies: number;
+      publisher: string;
+      publicationYear: number;
+      title: string;
+    },
+    role: string,
+  ): Promise<ClientResponse<any>> {
     try {
-      const response = await this.client.post('api/users');
-
+      const response = await this.client.post('api/books', data); // Dodaj `data` jako drugi argument
       return {
         success: true,
         data: response.data,
@@ -110,7 +128,6 @@ export class LibraryClient {
       };
     } catch (error) {
       const axiosError = error as AxiosError<Error>;
-
       return {
         success: false,
         data: null,
@@ -119,5 +136,3 @@ export class LibraryClient {
     }
   }
 }
-
-export {};

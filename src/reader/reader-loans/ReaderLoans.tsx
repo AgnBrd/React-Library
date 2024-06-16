@@ -28,6 +28,8 @@ interface Data {
   end_date: string;
   loan_date: string;
   return_date: string;
+  book_id: number;
+  user_id: number;
   title: string;
 }
 
@@ -102,6 +104,18 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Return Date',
   },
+  // {
+  //   id: 'book_id',
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: 'Book ID',
+  // },
+  // {
+  //   id: 'user_id',
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: 'User ID',
+  // },
   {
     id: 'title',
     numeric: false,
@@ -146,12 +160,17 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts',
+              'aria-label': 'select all loans',
             }}
           />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell>
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
@@ -215,6 +234,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     </Toolbar>
   );
 }
+
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
@@ -225,7 +245,7 @@ export default function EnhancedTable() {
   const [rows, setRows] = React.useState<Data[]>([]);
 
   const { t } = useTranslation();
-  const apiClient = useApi();
+  const { apiClient, setUser, user } = useApi();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -304,7 +324,7 @@ export default function EnhancedTable() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, rows],
   );
 
   return (
@@ -384,6 +404,8 @@ export default function EnhancedTable() {
                       <TableCell align="left">{row.end_date}</TableCell>
                       <TableCell align="left">{row.loan_date}</TableCell>
                       <TableCell align="left">{row.return_date}</TableCell>
+                      {/*<TableCell align="right">{row.book_id}</TableCell>*/}
+                      {/*<TableCell align="right">{row.user_id}</TableCell>*/}
                       <TableCell align="left">{row.title}</TableCell>
                     </TableRow>
                   );
@@ -394,7 +416,7 @@ export default function EnhancedTable() {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={8} />
                   </TableRow>
                 )}
               </TableBody>

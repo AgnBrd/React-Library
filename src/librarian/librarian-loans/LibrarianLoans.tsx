@@ -229,7 +229,7 @@ export default function EnhancedTable() {
   const [rows, setRows] = React.useState<Data[]>([]);
 
   const { t } = useTranslation();
-  const apiClient = useApi();
+  const { apiClient, setUser, user } = useApi();
 
   React.useEffect(() => {
     const fetchData = async () => {

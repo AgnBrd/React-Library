@@ -8,7 +8,7 @@ import { useApi } from '../api/ApiProvider';
 
 function LoginForm() {
   const navigate = useNavigate();
-  const apiClient = useApi();
+  const { apiClient, setUser } = useApi();
 
   const onSubmit = useCallback(
     (values: { username: string; password: string }, formik: any) => {
@@ -27,7 +27,7 @@ function LoginForm() {
         }
       });
     },
-    [apiClient, navigate],
+    [apiClient, navigate, setUser],
   );
 
   const validationSchema = useMemo(
