@@ -48,6 +48,33 @@ export class LibraryClient {
     }
   }
 
+  public async register(
+    email: string,
+    data: {
+      username: string;
+      password: string;
+    },
+  ): Promise<ClientResponse<any>> {
+    try {
+      const response = await this.client.patch(
+        `/api/users/register/${email}`,
+        data,
+      );
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
   public async getBooks(): Promise<ClientResponse<any | null>> {
     try {
       const response = await this.client.get('api/books');

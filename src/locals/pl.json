@@ -18,5 +18,6 @@
   "delete_book": "Usuń książkę",
   "loan_button": "Wypożycz",
   "your_loans": "Twoje wypożyczenia",
-  "add_user": "Dodaj użytkownika"
+  "add_user": "Dodaj użytkownika",
+  "register": "Rejestruj"
 }

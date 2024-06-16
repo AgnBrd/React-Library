@@ -10,7 +10,7 @@ body, html {
 .login-page {
     display: flex;
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     background-color: gainsboro;
 }
 
@@ -37,7 +37,7 @@ body, html {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.8); /* Opcjonalne tło dla formularza logowania */
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
@@ -62,4 +62,9 @@ body, html {
     font-family: 'Palatino Linotype';
     background-color: darkgrey;
     color: black;
+}
+
+.register-link{
+    color: aqua;
+    margin-top: 1rem;
 }

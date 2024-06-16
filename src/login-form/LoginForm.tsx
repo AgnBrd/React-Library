@@ -3,7 +3,7 @@ import './LoginForm.css';
 import { TextField, Button } from '@mui/material';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useApi } from '../api/ApiProvider';
 
 function LoginForm() {
@@ -90,6 +90,9 @@ function LoginForm() {
               >
                 Confirm
               </Button>
+              <div className="register-link">
+                <Link to="/register">Register</Link>
+              </div>
             </form>
           )}
         </Formik>
