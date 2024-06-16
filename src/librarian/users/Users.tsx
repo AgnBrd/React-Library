@@ -16,12 +16,13 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import AddUserIcon from '@mui/icons-material/PersonAddAlt';
 import { visuallyHidden } from '@mui/utils';
 import MenuAppBar from '../../main-bar/AppBar';
 import './Users.css';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../api/ApiProvider';
+import { Link } from 'react-router-dom';
 
 interface Data {
   id: number;
@@ -154,10 +155,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  handleDelete: () => void; // Add this line
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+  const { numSelected, handleDelete } = props;
   const { t } = useTranslation();
 
   return (
@@ -195,14 +197,14 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
+        <Tooltip title="Add user">
+          <IconButton component={Link} to="/addUser">
+            <AddUserIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -305,6 +307,24 @@ export default function EnhancedTable() {
     [order, orderBy, page, rowsPerPage, rows],
   );
 
+  const handleDelete = async () => {
+    // const { apiClient, setUser, user } = useApi();
+    try {
+      await Promise.all(
+        selected.map((id) =>
+          apiClient.deleteUser(String(id), user?.role || ''),
+        ),
+      );
+
+      setRows((prevRows) =>
+        prevRows.filter((row) => !selected.includes(row.id)),
+      );
+      setSelected([]);
+    } catch (error) {
+      console.error('Error deleting users:', error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -333,7 +353,10 @@ export default function EnhancedTable() {
         }}
       >
         <Paper sx={{ width: '70%', mb: 30, backgroundColor: 'gainsboro' }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            handleDelete={handleDelete}
+          />
           <TableContainer>
             <Table sx={{ minWidth: 750 }} size={dense ? 'small' : 'medium'}>
               <EnhancedTableHead

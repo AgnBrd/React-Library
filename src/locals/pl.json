@@ -17,5 +17,6 @@
   "update_book": "Zmień dane książki",
   "delete_book": "Usuń książkę",
   "loan_button": "Wypożycz",
-  "your_loans": "Twoje wypożyczenia"
+  "your_loans": "Twoje wypożyczenia",
+  "add_user": "Dodaj użytkownika"
 }

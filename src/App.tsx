@@ -16,6 +16,7 @@ import UpdateBook from './librarian/librarian-edit-books/UpdateBook';
 import ApiProvider from './api/ApiProvider';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
+import AddUser from './librarian/add-user/AddUser';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
               <Route path="update" element={<UpdateBook />} />
               <Route path="delete" element={<DeleteBook />} />
             </Route>
+            <Route path="/addUser" element={<AddUser />} />
           </Routes>
         </ApiProvider>
       </I18nextProvider>

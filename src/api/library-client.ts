@@ -108,19 +108,16 @@ export class LibraryClient {
     }
   }
 
-  public async addBook(
+  public async addUser(
     data: {
-      author: string;
-      isbn: string;
-      availableCopies: number;
-      publisher: string;
-      publicationYear: number;
-      title: string;
+      name: string;
+      email: string;
+      role: string;
     },
     role: string,
   ): Promise<ClientResponse<any>> {
     try {
-      const response = await this.client.post('api/books', data);
+      const response = await this.client.post('/api/users/create', data);
       return {
         success: true,
         data: response.data,
@@ -165,12 +162,61 @@ export class LibraryClient {
     }
   }
 
+  public async deleteUser(
+    id: string,
+    role: string,
+  ): Promise<ClientResponse<void>> {
+    try {
+      const response = await this.client.delete(`api/users/${id}`);
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
   public async deleteBook(
     id: string,
     role: string,
   ): Promise<ClientResponse<void>> {
     try {
       const response = await this.client.delete(`api/books/${id}`);
+      return {
+        success: true,
+        data: response.data,
+        statusCode: response.status,
+      };
+    } catch (error) {
+      const axiosError = error as AxiosError<Error>;
+      return {
+        success: false,
+        data: null,
+        statusCode: axiosError.response?.status || 0,
+      };
+    }
+  }
+
+  public async addBook(
+    data: {
+      author: string;
+      isbn: string;
+      availableCopies: number;
+      publisher: string;
+      publicationYear: number;
+      title: string;
+    },
+    role: string,
+  ): Promise<ClientResponse<any>> {
+    try {
+      const response = await this.client.post('api/books', data);
       return {
         success: true,
         data: response.data,

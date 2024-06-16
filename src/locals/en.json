@@ -17,5 +17,6 @@
   "update_book": "Update book",
   "delete_book": "Delete book",
   "loan_button": "Loan",
-  "your_loans": "Your loans"
+  "your_loans": "Your loans",
+  "add_user": "Add user"
 }
