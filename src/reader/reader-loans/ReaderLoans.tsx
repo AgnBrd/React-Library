@@ -12,11 +12,6 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import MenuAppBar from '../../main-bar/AppBar';
 import './ReaderLoans.css';
@@ -32,7 +27,6 @@ interface Data {
   user_id: number;
 }
 
-title: string;
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -104,47 +98,32 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: 'Return Date',
   },
-  // {
-  //   id: 'book_id',
-  //   numeric: true,
-  //   disablePadding: false,
-  //   label: 'Book ID',
-  // },
-  // {
-  //   id: 'user_id',
-  //   numeric: true,
-  //   disablePadding: false,
-  //   label: 'User ID',
-  // },
   {
-    id: 'title',
-    numeric: false,
+    id: 'book_id',
+    numeric: true,
     disablePadding: false,
-    label: 'Book Title',
+    label: 'Book ID',
+  },
+  {
+    id: 'user_id',
+    numeric: true,
+    disablePadding: false,
+    label: 'User ID',
   },
 ];
 
 interface EnhancedTableProps {
-  numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
   ) => void;
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
   rowCount: number;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -153,17 +132,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all loans',
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -190,47 +158,24 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+function EnhancedTableToolbar() {
   const { t } = useTranslation();
-  const { numSelected } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity,
-            ),
-        }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%', fontFamily: 'Palatino Linotype' }}
-          variant="h5"
-          id="tableTitle"
-          component="div"
-        >
-          {t('loans_table')}
-        </Typography>
-      )}
+      <Typography
+        sx={{ flex: '1 1 100%', fontFamily: 'Palatino Linotype' }}
+        variant="h5"
+        id="tableTitle"
+        component="div"
+      >
+        {t('loans_table')}
+      </Typography>
     </Toolbar>
   );
 }
@@ -238,7 +183,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -270,34 +214,6 @@ export default function EnhancedTable() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -313,8 +229,6 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -328,16 +242,7 @@ export default function EnhancedTable() {
   );
 
   return (
-    <div
-      className="Loans-form"
-      style={{
-        // display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'darkgray',
-        flexDirection: 'column',
-      }}
-    >
+    <div className="Loans-form">
       <MenuAppBar />
       <h1
         style={{
@@ -351,15 +256,13 @@ export default function EnhancedTable() {
       </h1>
       <Box
         sx={{
-          // display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          // minHeight: '100vh',
           backgroundColor: 'darkgray',
         }}
       >
         <Paper sx={{ width: '80%', mb: 40, backgroundColor: 'gainsboro' }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}
@@ -367,47 +270,30 @@ export default function EnhancedTable() {
               size={dense ? 'small' : 'medium'}
             >
               <EnhancedTableHead
-                numSelected={selected.length}
                 order={order}
                 orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
                 rowCount={rows.length}
               />
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
-                      selected={isItemSelected}
                       sx={{ cursor: 'pointer' }}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
                       <TableCell component="th" id={labelId} scope="row">
                         {row.id}
                       </TableCell>
                       <TableCell align="left">{row.end_date}</TableCell>
                       <TableCell align="left">{row.loan_date}</TableCell>
                       <TableCell align="left">{row.return_date}</TableCell>
-                      {/*<TableCell align="right">{row.book_id}</TableCell>*/}
-                      {/*<TableCell align="right">{row.user_id}</TableCell>*/}
-                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="right">{row.book_id}</TableCell>
+                      <TableCell align="right">{row.user_id}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -417,7 +303,7 @@ export default function EnhancedTable() {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={8} />
+                    <TableCell colSpan={6} />
                   </TableRow>
                 )}
               </TableBody>

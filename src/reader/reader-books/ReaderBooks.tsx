@@ -253,23 +253,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Button
-          style={{
-            backgroundColor: 'black',
-            border: 'none',
-            color: 'darkgray',
-            padding: '10px 30px',
-            textAlign: 'center',
-            textDecoration: 'none',
-            display: 'inline-block',
-            fontSize: '16px',
-            cursor: 'pointer',
-            borderRadius: '4px',
-            transition: 'background-color 0.3s',
-            fontFamily: 'Palatino Linotype', // zmiana czcionki
-          }}
-          onClick={handleLoanClick} // Dodaj obsługę kliknięcia
-        >
+        <Button className="loan-button" onClick={handleLoanClick}>
           {t('loan_button')}
         </Button>
       ) : (
@@ -361,81 +345,84 @@ const ReaderBooks = () => {
   return (
     <Box className="reader-books">
       <MenuAppBar />
-      <Paper className="reader-books-conteiner">
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          selected={selected}
-        />
-        <TableContainer className="reader-books-table">
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      <Box className="reader-books-container">
+        <h1>Search for your book</h1>
+        <Paper>
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            selected={selected}
+          />
+          <TableContainer className="reader-books-table">
+            <Table sx={{ minWidth: 100 }} aria-labelledby="tableTitle">
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row">
-                        {row.id}
-                      </TableCell>
-                      <TableCell>{row.isbn}</TableCell>
-                      <TableCell>{row.title}</TableCell>
-                      <TableCell>{row.author}</TableCell>
-                      <TableCell>{row.avaliable_copies}</TableCell>
-                      <TableCell>{row.publisher}</TableCell>
-                      <TableCell>{row.publication_year}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row">
+                          {row.id}
+                        </TableCell>
+                        <TableCell>{row.isbn}</TableCell>
+                        <TableCell>{row.title}</TableCell>
+                        <TableCell>{row.author}</TableCell>
+                        <TableCell>{row.avaliable_copies}</TableCell>
+                        <TableCell>{row.publisher}</TableCell>
+                        <TableCell>{row.publication_year}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: 53 * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Box>
     </Box>
   );
 };
