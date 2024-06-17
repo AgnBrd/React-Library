@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
 import './Register.css';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../api/ApiProvider';
@@ -30,7 +31,7 @@ const Register: React.FC = () => {
           if (response.success) {
             navigate('/login');
           } else {
-            formikHelpers.setFieldError('email', 'Email do not exists.');
+            formikHelpers.setFieldError('email', 'Email does not exist.');
           }
         })
         .catch((error) => {
@@ -55,8 +56,8 @@ const Register: React.FC = () => {
   });
 
   return (
-    <div className="register-form">
-      <div className="register-form-container">
+    <div className="register-container">
+      <Box className="register-box">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           onSubmit={onSubmit}
@@ -65,14 +66,13 @@ const Register: React.FC = () => {
           validateOnBlur
         >
           {(formik) => (
-            <form
-              className="register-form"
-              id="signForm"
-              noValidate
-              onSubmit={formik.handleSubmit}
-            >
+            <form id="signForm" noValidate onSubmit={formik.handleSubmit}>
               <h1>{t('register')}</h1>
-              <Grid container spacing={1} style={{ maxWidth: '400px' }}>
+              <Grid
+                container
+                spacing={1}
+                style={{ maxWidth: '400px', margin: '0 auto' }}
+              >
                 <Grid item xs={12} sm={12}>
                   <TextField
                     label="Email"
@@ -131,7 +131,7 @@ const Register: React.FC = () => {
             </form>
           )}
         </Formik>
-      </div>
+      </Box>
     </div>
   );
 };

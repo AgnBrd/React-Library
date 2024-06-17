@@ -1,0 +1,45 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: gainsboro;
+}
+
+.reader-add-loan {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items at the top */
+    align-items: center;
+    background-color: gainsboro;
+    /*height: 100vh; !* Full viewport height *!*/
+}
+
+.reader-add-loan-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+
+.reader-add-loan .MuiTabs-root {
+    margin-bottom: 0rem; /* Spacing between tabs and form */
+}
+
+.reader-add-loan .MuiTextField-root {
+    width: 100%; /* Full width of the container */
+    margin-bottom: 1rem; /* Spacing between fields */
+
+}
+
+.reader-add-loan .MuiButton-root {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-family: 'Palatino Linotype';
+    background-color: darkgrey;
+    color: black;
+    align-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}

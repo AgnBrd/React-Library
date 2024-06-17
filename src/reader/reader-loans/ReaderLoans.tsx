@@ -242,7 +242,11 @@ export default function EnhancedTable() {
   );
 
   return (
-    <div className="Loans-form">
+    <div
+      style={{
+        backgroundColor: 'darkgray',
+      }}
+    >
       <MenuAppBar />
       <h1
         style={{
@@ -250,18 +254,22 @@ export default function EnhancedTable() {
           textAlign: 'center',
           fontFamily: 'Palatino Linotype',
           fontSize: 40,
+          marginBottom: 0,
         }}
       >
         {t('your_loans')}
       </h1>
       <Box
         sx={{
+          display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          minHeight: '100vh',
           backgroundColor: 'darkgray',
+          marginTop: '-4rem',
         }}
       >
-        <Paper sx={{ width: '80%', mb: 40, backgroundColor: 'gainsboro' }}>
+        <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
           <EnhancedTableToolbar />
           <TableContainer>
             <Table

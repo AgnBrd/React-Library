@@ -163,8 +163,8 @@ export class LibraryClient {
   public async createLoan(data: {
     loanDate: string;
     endDate: string;
-    userID: number;
-    bookID: number;
+    userId: number | null;
+    bookId: number | null;
   }): Promise<ClientResponse<any>> {
     try {
       const response = await this.client.post('/api/loans', data);

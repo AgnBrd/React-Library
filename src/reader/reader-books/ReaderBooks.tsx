@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { alpha } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,18 +15,18 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { visuallyHidden } from '@mui/utils';
-import './ReaderBooks.css';
 import { Button } from '@mui/material';
 import MenuAppBar from '../../main-bar/AppBar';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../api/ApiProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Data {
   id: number;
   isbn: string;
   title: string;
   author: string;
-  avaliable_copies: number;
+  available_copies: number;
   publisher: string;
   publication_year: number;
 }
@@ -72,42 +71,22 @@ function stableSort<T>(
 }
 
 interface HeadCell {
-  disablePadding: boolean;
   id: keyof Data;
-  label: string;
   numeric: boolean;
+  disablePadding: boolean;
+  label: string;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells: HeadCell[] = [
+  { id: 'id', numeric: true, disablePadding: true, label: 'ID' },
+  { id: 'isbn', numeric: false, disablePadding: false, label: 'ISBN' },
+  { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
+  { id: 'author', numeric: false, disablePadding: false, label: 'Author' },
   {
-    id: 'id',
+    id: 'available_copies',
     numeric: true,
     disablePadding: false,
-    label: 'ID',
-  },
-  {
-    id: 'isbn',
-    numeric: false,
-    disablePadding: false,
-    label: 'ISBN',
-  },
-  {
-    id: 'title',
-    numeric: false,
-    disablePadding: false,
-    label: 'Title',
-  },
-  {
-    id: 'author',
-    numeric: false,
-    disablePadding: false,
-    label: 'Author',
-  },
-  {
-    id: 'avaliable_copies',
-    numeric: true,
-    disablePadding: false,
-    label: 'Available copies',
+    label: 'Available Copies',
   },
   {
     id: 'publisher',
@@ -119,7 +98,7 @@ const headCells: readonly HeadCell[] = [
     id: 'publication_year',
     numeric: true,
     disablePadding: false,
-    label: 'Year of publication',
+    label: 'Publication Year',
   },
 ];
 
@@ -131,7 +110,7 @@ interface EnhancedTableProps {
   ) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
-  orderBy: string;
+  orderBy: keyof Data;
   rowCount: number;
 }
 
@@ -144,6 +123,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     rowCount,
     onRequestSort,
   } = props;
+  const { t } = useTranslation();
+
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -158,19 +139,22 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
+            inputProps={{ 'aria-label': 'select all books' }}
           />
         </TableCell>
         {headCells.map((headCell) => (
-          <TableCell key={headCell.id}>
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
+          >
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
+              sx={{ fontWeight: 'bold' }}
             >
-              {headCell.label}
+              {t(headCell.label)}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -186,53 +170,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
-  selected: readonly number[];
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+  const { numSelected } = props;
   const { t } = useTranslation();
-  const { numSelected, selected } = props;
-  const { apiClient, setUser, user } = useApi();
+  const navigate = useNavigate();
 
-  const handleLoanClick = async () => {
-    if (selected.length === 0 || user?.id === undefined) {
-      return;
-    }
-
-    const bookId = selected[0];
-    const userId = user.id; // user.id jest już typu number, więc nie powinno być problemu z przypisaniem
-    const loanDate = new Date();
-    const endDate = new Date(loanDate);
-    endDate.setDate(loanDate.getDate() + 60);
-
-    try {
-      await apiClient.createLoan({
-        userID: userId,
-        bookID: bookId,
-        loanDate: loanDate.toISOString(),
-        endDate: endDate.toISOString(),
-      });
-      alert('Loan created successfully!');
-    } catch (error) {
-      console.error('Error creating loan:', error);
-      alert('Failed to create loan.');
-    }
+  const handleLoanClick = () => {
+    navigate('/addLoan');
   };
 
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity,
-            ),
-        }),
-      }}
-    >
+    <Toolbar>
       {numSelected > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
@@ -240,7 +190,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} {t('selected')}
         </Typography>
       ) : (
         <Typography
@@ -253,12 +203,14 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Button className="loan-button" onClick={handleLoanClick}>
+        <Button variant="contained" onClick={handleLoanClick}>
           {t('loan_button')}
         </Button>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton>{/*<FilterListIcon />*/}</IconButton>
+        <Tooltip title={t('filter_list')}>
+          <IconButton aria-label="filter list">
+            {/* <FilterListIcon /> */}
+          </IconButton>
         </Tooltip>
       )}
     </Toolbar>
@@ -266,16 +218,16 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 const ReaderBooks = () => {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows, setRows] = React.useState<Data[]>([]);
-  const { apiClient, user } = useApi();
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [selected, setSelected] = useState<number[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState<Data[]>([]);
+  const { apiClient } = useApi();
+  const { t } = useTranslation();
 
-  React.useEffect(() => {
-    // Fetch initial data from the backend
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await apiClient.getBooks();
@@ -299,34 +251,37 @@ const ReaderBooks = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
-      return;
+      const newSelected = rows.map((n) => n.id);
+      setSelected((prevSelected) => [...prevSelected, ...newSelected]);
+    } else {
+      setSelected([]);
     }
-    setSelected([]);
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = [...selected, id]; // Użycie operatora spread (...) do konwersji
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
+      newSelected = [...selected.slice(1)]; // Użycie operatora spread (...) do konwersji
     } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = [...selected.slice(0, -1)]; // Użycie operatora spread (...) do konwersji
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+      newSelected = [
+        ...selected.slice(0, selectedIndex),
+        ...selected.slice(selectedIndex + 1),
+      ]; // Użycie operatora spread (...) do konwersji
     }
 
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
     setPage(newPage);
   };
 
@@ -340,20 +295,41 @@ const ReaderBooks = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <Box className="reader-books">
+    <div
+      style={{
+        backgroundColor: 'darkgray',
+      }}
+    >
       <MenuAppBar />
-      <Box className="reader-books-container">
-        <h1>Search for your book</h1>
-        <Paper>
-          <EnhancedTableToolbar
-            numSelected={selected.length}
-            selected={selected}
-          />
-          <TableContainer className="reader-books-table">
-            <Table sx={{ minWidth: 100 }} aria-labelledby="tableTitle">
+      <h1
+        style={{
+          color: 'black',
+          textAlign: 'center',
+          fontFamily: 'Palatino Linotype',
+          fontSize: 40,
+          marginBottom: 0,
+        }}
+      >
+        {t('search_for_your_book')}
+      </h1>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          backgroundColor: 'darkgray',
+          marginTop: '-3rem',
+        }}
+      >
+        <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+
+          <TableContainer>
+            <Table aria-labelledby="tableTitle" size="medium">
               <EnhancedTableHead
                 numSelected={selected.length}
                 order={order}
@@ -383,30 +359,29 @@ const ReaderBooks = () => {
                           <Checkbox
                             color="primary"
                             checked={isItemSelected}
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
+                            inputProps={{ 'aria-labelledby': labelId }}
                           />
                         </TableCell>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
                           {row.id}
                         </TableCell>
                         <TableCell>{row.isbn}</TableCell>
                         <TableCell>{row.title}</TableCell>
                         <TableCell>{row.author}</TableCell>
-                        <TableCell>{row.avaliable_copies}</TableCell>
+                        <TableCell>{row.available_copies}</TableCell>
                         <TableCell>{row.publisher}</TableCell>
                         <TableCell>{row.publication_year}</TableCell>
                       </TableRow>
                     );
                   })}
                 {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={8} />
                   </TableRow>
                 )}
               </TableBody>
@@ -423,7 +398,7 @@ const ReaderBooks = () => {
           />
         </Paper>
       </Box>
-    </Box>
+    </div>
   );
 };
 

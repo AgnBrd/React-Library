@@ -1,41 +1,10 @@
-.reader-books {
-    flex-direction: column;
-    justify-content: flex-start; /* Changed from center to flex-start */
-    align-items: center;
-    background-color: darkgray;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.reader-books-container {
+.Books-form {
+    padding: 0rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Changed from center to flex-start */
+    justify-content: center;
+    gap: 0rem;
     align-items: center;
-    background-color: darkgray;
-    width: 100%;
-    height: calc(100vh - 64px); /* Adjust for AppBar, assuming height of 64px */
-    overflow: hidden;
-    margin-top: 50px; /* Adjust as needed */
-}
-
-.reader-books-table {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.loan-button {
-    background-color: black;
-    border: none;
-    color: darkgray;
-    padding: 10px 30px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    font-family: 'Palatino Linotype';
+    background-color: gainsboro;
+    /*color: white;*/
 }

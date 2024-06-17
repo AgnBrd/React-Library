@@ -18,6 +18,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import AddUser from './librarian/add-user/AddUser';
 import Register from './register-form/Register';
+import AddLoan from './reader/add-loan/AddLoan';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route path="delete" element={<DeleteBook />} />
             </Route>
             <Route path="/addUser" element={<AddUser />} />
+            <Route path="/addLoan" element={<AddLoan />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </ApiProvider>

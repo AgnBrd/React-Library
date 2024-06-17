@@ -334,6 +334,7 @@ export default function EnhancedTable() {
           alignItems: 'center',
           minHeight: '100vh',
           backgroundColor: 'darkgray',
+          marginTop: '-3rem',
         }}
       >
         <Paper sx={{ width: '80%', mb: 1, backgroundColor: 'gainsboro' }}>
